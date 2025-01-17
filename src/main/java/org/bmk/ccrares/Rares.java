@@ -12,13 +12,15 @@ public final class Rares extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        // Plugin startup logic
         plugin = this;
         getServer().getPluginManager().registerEvents(new AnvilEvent(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new BlockBreakListener(),this);
         getServer().getPluginManager().registerEvents(new RightClickListener(), this);
         getServer().getPluginManager().registerEvents(new ClickEntityListener(), this);
-        // Plugin startup logic
+
         RandomFireWorks.getManager().addColors();
         RandomFireWorks.getManager().addTypes();
 

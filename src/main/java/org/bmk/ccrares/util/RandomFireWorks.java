@@ -14,7 +14,7 @@ public class RandomFireWorks {
 
     private static RandomFireWorks fireWorks = new RandomFireWorks();
 
-//While in other classes you can now use RandomFirWorks.getManager().<METHODS>();
+
 
     public static RandomFireWorks getManager(){
         return fireWorks;
@@ -24,9 +24,8 @@ public class RandomFireWorks {
     ArrayList<Color> colors = new ArrayList<Color>();
     ArrayList<FireworkEffect.Type> types = new ArrayList<FireworkEffect.Type>();
 
-    //MAKE SURE YOU PUT THIS IN YOUR ONENABLE!!!
+
     public void addColors(){
-//ADD ALL THE COLORS
         colors.add(Color.WHITE);
         colors.add(Color.PURPLE);
         colors.add(Color.RED);
@@ -44,22 +43,19 @@ public class RandomFireWorks {
         colors.add(Color.OLIVE);
         colors.add(Color.NAVY);
         colors.add(Color.BLACK);
-//I think I added them all not sure though
+
     }
 
-    //MAKE SURE YOU PUT THIS IN YOUR ONENABLE!!!
+
     public void addTypes(){
-//ADD ALL THE TYPES
         types.add(FireworkEffect.Type.BURST);
         types.add(FireworkEffect.Type.BALL);
         types.add(FireworkEffect.Type.BALL_LARGE);
         types.add(FireworkEffect.Type.CREEPER);
         types.add(FireworkEffect.Type.STAR);
-//Added all the types
     }
 
-//Getting a random firework
-
+    //Getting a random firework
     public FireworkEffect.Type getRandomType(){
         int size = types.size();
         Random ran = new Random();
@@ -68,8 +64,7 @@ public class RandomFireWorks {
         return theType;
     }
 
-//Getting a random COLOR!!!
-
+    // Getting a random color
     public Color getRandomColor(){
         int size = colors.size();
         Random ran = new Random();
@@ -84,9 +79,9 @@ public class RandomFireWorks {
         Firework fw = (Firework)loc.getWorld().spawnEntity(loc, EntityType.FIREWORK_ROCKET);
         FireworkMeta fm = fw.getFireworkMeta();
         fm.setPower(1);
-//Adding all the effects to the firework meta
+        // Add effects to meta
         fm.addEffects(FireworkEffect.builder().with(getRandomType()).withColor(getRandomColor()).build());
-//set the firework meta to the firework!
+        // Apply meta to firework
         fw.setFireworkMeta(fm);
     }
 }
