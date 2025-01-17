@@ -1,0 +1,4 @@
+name: CCRares
+version: '1.0-SNAPSHOT'
+main: org.bmk.ccrares.Rares
+api-version: '1.21'
