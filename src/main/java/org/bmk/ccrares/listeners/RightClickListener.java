@@ -9,6 +9,7 @@ import org.bukkit.block.BlastFurnace;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Smoker;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,14 +18,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.net.http.WebSocket;
+import java.util.Random;
 
 public class RightClickListener implements Listener {
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent e) {
-
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (e.getPlayer().getItemInHand() != null) {
                 ItemStack i = e.getPlayer().getItemInHand();
@@ -32,7 +37,49 @@ public class RightClickListener implements Listener {
 
                 if (e.getHand() == EquipmentSlot.HAND) {
 
-                    if(Items.isWearableHat(i)) {
+                    if(Items.isVpToken(i)) {
+                        int vp = Items.getVotepointAmount(i);
+                        //player.sendMessage("votepoints: " + vp);
+                        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"eco give " + player.getName() + " " + vp);
+                    }
+                    else if(Items.isClaimblockVoucher(i)) {
+                        int vp = Items.getClaimblockAmount(i);
+                        //player.sendMessage("votepoints: " + vp);
+                        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"acb " + player.getName() + " " + vp);
+                        player.sendMessage(ChatColor.GREEN + "You received " + vp + " claim blocks.");
+
+                    }
+                    else if(Items.isRandomVotepoints(i)) {
+                        Random rand = new Random();
+                        int amt = rand.nextInt(1,11);
+                        player.sendMessage(ChatColor.GREEN + "You won " + amt + " vote points!");
+                        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"eco give " + player.getName() + " " + amt);
+                    }
+                    else if(Items.isReleaseToken(i)) {
+                        if(i.getType() == Material.WRITTEN_BOOK) {
+                            BookMeta meta = (BookMeta)i.getItemMeta();
+                           // meta.
+                        }
+
+                    }
+                    else if(Items.isStarburstCandy(i)) {
+                        if(!Items.isOnCooldown(i)) {
+                            if(i.getAmount() == 1) {
+                                player.setFoodLevel(20);
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 1));
+                                Items.setCooldown(i, player, 1800);
+                            }
+                            else {
+                                player.sendMessage(ChatColor.RED + "Please unstack this item before using.");
+                            }
+                        }
+                        else {
+                            player.sendMessage(ChatColor.RED + "This item is on cooldown.");
+                        }
+                    } else if(Items.isWearableHat(i)) {
                         if(e.getPlayer().getInventory().getItem(EquipmentSlot.HEAD).getType() == Material.AIR) {
                             ItemStack is = i.clone();
                             is.setAmount(1);
@@ -45,23 +92,26 @@ public class RightClickListener implements Listener {
                     }
 
                     // Player weather changer
-                    if (Items.isPlayerWeatherChanger(i)) {
+                    else if (Items.isPlayerWeatherChanger(i)) {
                         player.setPlayerWeather(WeatherType.CLEAR);
                         player.sendMessage(ChatColor.GOLD + "Set your weather to clear.");
                     }
 
 
                     // Random firework wand
-                    if (Items.isFireworkWand(i)) {
+                    else if (Items.isFireworkWand(i)) {
 
-                        //Messager.debug("Launching random firework");
-                        Location loc = player.getLocation();
-                        RandomFireWorks.getManager().launchRandomFirework(loc);
+                        if(!Items.isOnCooldown(i)) {
+                            //Messager.debug("Launching random firework");
+                            Location loc = player.getLocation();
+                            RandomFireWorks.getManager().launchRandomFirework(loc);
+                            Items.setCooldown(i, player, 1);
+                        }
                     }
 
 
                     // Celestial Toolbox
-                    if (Items.isCelestialToolbox(i)) {
+                    else if (Items.isCelestialToolbox(i)) {
                         if (Util.getOpenSlots(player) > 2) {
                             player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
                             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "serveritem give celestial_pickaxe 1 " + player.getName());
@@ -72,7 +122,7 @@ public class RightClickListener implements Listener {
                         }
                         e.setCancelled(true);
                     }
-                    if (Items.isPlantBox(i)) {
+                    else if (Items.isPlantBox(i)) {
                         if (Util.getOpenSlots(player) > 4) {
                             player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
                             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "serveritem give fiddle_leaf_plant 1 " + player.getName());
@@ -87,6 +137,7 @@ public class RightClickListener implements Listener {
                         }
                         e.setCancelled(true);
                     }
+
 
                 /*
                         RIGHT CLICK BLOCK ONLY

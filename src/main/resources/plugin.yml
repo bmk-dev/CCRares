@@ -2,3 +2,7 @@ name: CCRares
 version: '1.0-SNAPSHOT'
 main: org.bmk.ccrares.Rares
 api-version: '1.21'
+softdepend: [PlayerParticles]
+commands:
+  reward:
+    description: Event reward command to bind to NPCs

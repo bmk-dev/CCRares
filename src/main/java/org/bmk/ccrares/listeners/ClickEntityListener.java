@@ -2,10 +2,8 @@ package org.bmk.ccrares.listeners;
 
 import org.bmk.ccrares.util.Items;
 import org.bmk.ccrares.util.Messager;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.GlowItemFrame;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
+import org.bmk.ccrares.util.Util;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -20,9 +18,23 @@ public class ClickEntityListener implements Listener {
             Player p = e.getPlayer();
             ItemStack i = p.getItemInHand();
 
+
+
+
             /*
             ITEM FRAME WAND
              */
+            if(e.getRightClicked() instanceof Player) {
+                Player clicked = (Player) e.getRightClicked();
+                Messager.debug("Player right clicked player");
+                if (Items.isReleaseToken(i)) {
+                    Messager.debug("Player clicked player with release token");
+                    Items.addReleaseTokenName(p, i, clicked);
+                    e.setCancelled(true);
+
+                }
+
+            }
             if(Items.isItemFrameInvisWand(i)) {
                 Messager.debug(p.getName() + " used item frame wand");
                 if (e.getRightClicked().getType() == EntityType.ITEM_FRAME) {
@@ -44,6 +56,9 @@ public class ClickEntityListener implements Listener {
                     e.setCancelled(true);
                 }
             }
+
+
+
 
         }
     }
